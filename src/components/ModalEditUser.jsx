@@ -12,7 +12,8 @@ const ModalEditUser = (props) => {
     if (show) {
       setName(dataUserEdit.first_name)
     }
-  }, [dataUserEdit, show])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -26,7 +27,7 @@ const ModalEditUser = (props) => {
         setJob('')
       }
     } catch (error) {
-      toast.error(`${error}`)
+      toast.error(error.message || error)
       console.error(error)
     }
   }

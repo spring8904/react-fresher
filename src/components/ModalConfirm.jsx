@@ -15,7 +15,7 @@ const ModalConfirm = (props) => {
         handleClose()
       }
     } catch (error) {
-      toast.error(`${error}`)
+      toast.error(error.message || error)
       console.error(error)
     }
   }

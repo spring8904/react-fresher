@@ -20,7 +20,7 @@ const ModalAddNew = (props) => {
         setJob('')
       }
     } catch (error) {
-      toast.error(`Error: ${error}`)
+      toast.error(error.message || error)
       console.error(error)
     }
   }

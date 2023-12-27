@@ -29,6 +29,7 @@ const TableUsers = () => {
         setTotalPages(res.total_pages)
       }
     } catch (error) {
+      toast.error(error.message || error)
       console.error(error)
     }
   }
