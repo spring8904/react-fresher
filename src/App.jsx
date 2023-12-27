@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import ErrorPage from './routes/error-page.jsx'
 import Home from './routes/Home.jsx'
 import Users from './routes/Users.jsx'
+import Login from './routes/Login.jsx'
 
 const App = () => {
   const router = createBrowserRouter([
@@ -16,6 +17,10 @@ const App = () => {
     {
       path: '/users',
       element: <Users />,
+    },
+    {
+      path: '/login',
+      element: <Login />,
     },
   ])
   return (
