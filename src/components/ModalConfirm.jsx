@@ -1,6 +1,6 @@
 import { Button, Modal } from 'react-bootstrap'
-import { deleteUser } from '../services/UserService'
 import { toast } from 'react-toastify'
+import { deleteUser } from '../services/UserService'
 
 const ModalConfirm = (props) => {
   const { show, handleClose, dataUserDelete, handleDeleteUser } = props

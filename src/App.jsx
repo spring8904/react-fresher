@@ -1,13 +1,18 @@
+import { useLocalStorage } from '@uidotdev/usehooks'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { useContext, useEffect } from 'react'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import ErrorPage from './routes/ErrorPage.jsx'
-import Home from './routes/Home.jsx'
-import Login from './routes/Login.jsx'
-import Users from './routes/Users.jsx'
+import { UserContext } from './context/UserContext'
+import ErrorPage from './routes/ErrorPage'
+import Home from './routes/Home'
+import Login from './routes/Login'
+import PrivateRoute from './routes/PrivateRoute'
+import Users from './routes/Users'
 
 const App = () => {
+  const [token] = useLocalStorage('token', null)
   const router = createBrowserRouter([
     {
       path: '/',
@@ -16,13 +21,26 @@ const App = () => {
     },
     {
       path: '/users',
-      element: <Users />,
+      element: (
+        <PrivateRoute>
+          <Users />
+        </PrivateRoute>
+      ),
     },
     {
       path: '/login',
       element: <Login />,
     },
   ])
+
+  const { login } = useContext(UserContext)
+
+  useEffect(() => {
+    if (token) {
+      login(token)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>

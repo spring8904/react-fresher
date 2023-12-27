@@ -1,28 +1,30 @@
 import { useCopyToClipboard, useLocalStorage } from '@uidotdev/usehooks'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Header from '../components/Header'
+import { UserContext } from '../context/UserContext'
 import { loginApi } from '../services/UserService'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [token, setToken] = useLocalStorage('token', null)
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const [, copyToClipboard] = useCopyToClipboard()
+  const { login } = useContext(UserContext)
+  const [token] = useLocalStorage('token', null)
 
   useEffect(() => {
     if (token) {
       navigate('/')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token])
+  }, [])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -33,17 +35,18 @@ const Login = () => {
 
     setIsLoading(true)
     try {
-      const res = await loginApi(email, password)
+      const res = await loginApi(email.trim(), password)
       if (res?.token) {
-        setToken(res.token)
-        toast.success('Login successful')
+        login(email)
+        setIsLoading(false)
         navigate('/')
+        toast.success('Login successful')
       }
     } catch (error) {
       toast.error(error.response?.data?.error || error.message || error)
       console.error(error)
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (
@@ -53,15 +56,13 @@ const Login = () => {
         <h1 className="text-center">Login</h1>
         <div className="mt-4 d-flex justify-content-center">
           <div className="border p-2 rounded d-flex align-items-center">
-            <span>eve.holt@reqres.in</span>
+            <span className="me-3">eve.holt@reqres.in</span>
             <Button
-              className="ms-2"
               variant="outline-success"
               size="sm"
-              type="button"
               onClick={() => {
                 copyToClipboard('eve.holt@reqres.in')
-                toast.success('Copied email to clipboard')
+                toast.success('Copied to clipboard')
               }}
             >
               Copy
@@ -96,9 +97,6 @@ const Login = () => {
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
               </span>
             </div>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Remember me" />
           </Form.Group>
           <Button
             variant="primary"

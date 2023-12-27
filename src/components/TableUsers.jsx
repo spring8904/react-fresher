@@ -1,3 +1,5 @@
+import { useDebounce } from '@uidotdev/usehooks'
+import Papa from 'papaparse'
 import { useEffect, useState } from 'react'
 import { Button, Container, FloatingLabel, Form, Table } from 'react-bootstrap'
 import { CSVLink } from 'react-csv'
@@ -9,13 +11,11 @@ import {
   FaFileImport,
 } from 'react-icons/fa6'
 import ReactPaginate from 'react-paginate'
-import { fetchUsers } from '../services/UserService.js'
-import ModalAddNew from './ModalAddNew.jsx'
-import ModalConfirm from './ModalConfirm.jsx'
-import ModalEditUser from './ModalEditUser.jsx'
-import Papa from 'papaparse'
 import { toast } from 'react-toastify'
-import { useDebounce } from '@uidotdev/usehooks'
+import { fetchUsers } from '../services/UserService'
+import ModalAddNew from './ModalAddNew'
+import ModalConfirm from './ModalConfirm'
+import ModalEditUser from './ModalEditUser'
 
 const TableUsers = () => {
   const [users, setUsers] = useState([])
@@ -87,7 +87,6 @@ const TableUsers = () => {
     } else {
       getUsers()
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounceSearchEmail])
 
@@ -161,9 +160,9 @@ const TableUsers = () => {
   return (
     <>
       <Container>
-        <div className="my-3 d-flex align-items-center justify-content-between">
+        <div className="my-3 d-flex flex-column md-flex-row md-align-items-center justify-content-between">
           <h3>List users:</h3>
-          <div className="d-flex gap-2">
+          <div className="d-flex gap-2 align-items-center">
             <Button
               className="d-flex align-items-center gap-1"
               variant="success"
@@ -206,11 +205,16 @@ const TableUsers = () => {
             onChange={(event) => setSearchEmail(event.target.value)}
           />
         </FloatingLabel>
-        <Table striped bordered hover>
+        <Table
+          striped
+          bordered
+          hover
+          className="d-block d-md-table overflow-auto"
+        >
           <thead>
             <tr>
               <th>
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between align-items-center">
                   ID
                   {sortBy?.id === 'asc' ? (
                     <FaArrowDownLong
@@ -234,7 +238,7 @@ const TableUsers = () => {
                 </div>
               </th>
               <th>
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between align-items-center">
                   First Name
                   {sortBy?.first_name === 'asc' ? (
                     <FaArrowDownLong
@@ -271,25 +275,26 @@ const TableUsers = () => {
                   <td>{user.last_name}</td>
                   <td>{user.email}</td>
                   <td>
-                    <Button
-                      variant="warning"
-                      className="me-2"
-                      onClick={() => {
-                        setDataUserEdit(user)
-                        setIsShowModalEdit(true)
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      onClick={() => {
-                        setDataUserDelete(user)
-                        setIsShowModalConfirm(true)
-                      }}
-                    >
-                      Delete
-                    </Button>
+                    <div className="d-flex gap-2">
+                      <Button
+                        variant="warning"
+                        onClick={() => {
+                          setDataUserEdit(user)
+                          setIsShowModalEdit(true)
+                        }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={() => {
+                          setDataUserDelete(user)
+                          setIsShowModalConfirm(true)
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               ))}
