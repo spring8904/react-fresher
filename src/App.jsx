@@ -23,6 +23,7 @@ const App = () => {
       element: <Login />,
     },
   ])
+
   return (
     <>
       <RouterProvider router={router} />

@@ -9,13 +9,13 @@ import {
   FaFileImport,
 } from 'react-icons/fa6'
 import ReactPaginate from 'react-paginate'
-import useDebounce from '../hooks/useDebounce.js'
 import { fetchUsers } from '../services/UserService.js'
 import ModalAddNew from './ModalAddNew.jsx'
 import ModalConfirm from './ModalConfirm.jsx'
 import ModalEditUser from './ModalEditUser.jsx'
 import Papa from 'papaparse'
 import { toast } from 'react-toastify'
+import { useDebounce } from '@uidotdev/usehooks'
 
 const TableUsers = () => {
   const [users, setUsers] = useState([])
@@ -68,9 +68,7 @@ const TableUsers = () => {
       const valueB = JSON.stringify(b[field]).toUpperCase()
 
       if (valueA < valueB) return -1
-
       if (valueA > valueB) return 1
-
       return 0
     })
 
@@ -90,7 +88,6 @@ const TableUsers = () => {
       getUsers()
     }
 
-    return () => {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounceSearchEmail])
 

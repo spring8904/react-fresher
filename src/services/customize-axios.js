@@ -5,12 +5,8 @@ const instance = axios.create({
 })
 
 instance.interceptors.response.use(
-  function (response) {
-    return response.data ? response.data : response.status
-  },
-  function (error) {
-    return Promise.reject(error)
-  },
+  (response) => (response.data ? response.data : response.status),
+  (error) => Promise.reject(error),
 )
 
 export default instance

@@ -1,7 +1,9 @@
-import { useLocalStorage } from '@uidotdev/usehooks'
-import { useState } from 'react'
+import { useCopyToClipboard, useLocalStorage } from '@uidotdev/usehooks'
+import { useEffect, useState } from 'react'
 import { Button, Container, Form } from 'react-bootstrap'
+import Spinner from 'react-bootstrap/Spinner'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Header from '../components/Header'
 import { loginApi } from '../services/UserService'
@@ -10,8 +12,17 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  // eslint-disable-next-line no-unused-vars
   const [token, setToken] = useLocalStorage('token', null)
+  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+  const [, copyToClipboard] = useCopyToClipboard()
+
+  useEffect(() => {
+    if (token) {
+      navigate('/')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -20,27 +31,46 @@ const Login = () => {
       return
     }
 
+    setIsLoading(true)
     try {
       const res = await loginApi(email, password)
       if (res?.token) {
         setToken(res.token)
         toast.success('Login successful')
-        setEmail('')
-        setPassword('')
+        navigate('/')
       }
     } catch (error) {
       toast.error(error.response?.data?.error || error.message || error)
       console.error(error)
     }
+    setIsLoading(false)
   }
+
   return (
     <>
       <Header />
       <Container>
         <h1 className="text-center">Login</h1>
+        <div className="mt-4 d-flex justify-content-center">
+          <div className="border p-2 rounded d-flex align-items-center">
+            <span>eve.holt@reqres.in</span>
+            <Button
+              className="ms-2"
+              variant="outline-success"
+              size="sm"
+              type="button"
+              onClick={() => {
+                copyToClipboard('eve.holt@reqres.in')
+                toast.success('Copied email to clipboard')
+              }}
+            >
+              Copy
+            </Button>
+          </div>
+        </div>
         <Form style={{ maxWidth: '500px', margin: '0 auto' }}>
           <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email (eve.holt@reqres.in)</Form.Label>
+            <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
               placeholder="Email"
@@ -73,10 +103,10 @@ const Login = () => {
           <Button
             variant="primary"
             type="submit"
-            disabled={email && password ? false : true}
+            disabled={!email || !password || isLoading ? true : false}
             onClick={handleSubmit}
           >
-            Login
+            {isLoading ? <Spinner size="sm" /> : 'Login'}
           </Button>
         </Form>
       </Container>
