@@ -1,30 +1,29 @@
-import { useCopyToClipboard, useLocalStorage } from '@uidotdev/usehooks'
-import { useContext, useEffect, useState } from 'react'
-import { Button, Container, Form } from 'react-bootstrap'
-import Spinner from 'react-bootstrap/Spinner'
+import { useCopyToClipboard } from '@uidotdev/usehooks'
+import { useEffect, useState } from 'react'
+import { Button, Container, Form, Spinner } from 'react-bootstrap'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Header from '../components/Header'
-import { UserContext } from '../context/UserContext'
-import { loginApi } from '../services/UserService'
+import { handleLogin } from '../redux/userSlice'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const [, copyToClipboard] = useCopyToClipboard()
-  const { login } = useContext(UserContext)
-  const [token] = useLocalStorage('token', null)
+  const isLoading = useSelector((state) => state.user.isLoading)
+  const user = useSelector((state) => state.user.value)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    if (token) {
+    if (user?.auth) {
       navigate('/')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -33,20 +32,7 @@ const Login = () => {
       return
     }
 
-    setIsLoading(true)
-    try {
-      const res = await loginApi(email.trim(), password)
-      if (res?.token) {
-        login(email)
-        setIsLoading(false)
-        navigate('/')
-        toast.success('Login successful')
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.error || error.message || error)
-      console.error(error)
-      setIsLoading(false)
-    }
+    dispatch(handleLogin(email, password))
   }
 
   return (

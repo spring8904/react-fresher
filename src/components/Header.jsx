@@ -1,16 +1,17 @@
-import { useContext } from 'react'
 import { Button, Container, Nav, Navbar } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { UserContext } from '../context/UserContext'
+import { logout } from '../redux/userSlice'
 import viteLogo from '/vite.svg'
 
 const Header = () => {
-  const { user, logout } = useContext(UserContext)
+  const user = useSelector((state) => state.user.value)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    logout()
+    dispatch(logout())
     navigate('/login')
     toast.success('Logout successful')
   }
@@ -32,15 +33,17 @@ const Header = () => {
         <Navbar.Collapse id="basic-navbar-nav" className="py-2">
           <Nav className="me-auto">
             {user?.auth && (
-              <NavLink className="nav-link" to="/users">
+              <NavLink className="nav-link fs-5" to="/users">
                 Manager Users
               </NavLink>
             )}
           </Nav>
-          <Nav className="gap-3 align-items-start lg-align-items-center">
+          <Nav className="gap-3 align-items-start align-items-lg-center">
             {user?.auth ? (
               <>
-                <span className="d-none lg-d-block">Welcome {user?.email}</span>
+                <span className="d-none d-lg-block">
+                  Welcome <b>{user?.email}</b>
+                </span>
                 <Button variant="outline-danger" onClick={handleLogout}>
                   Logout
                 </Button>

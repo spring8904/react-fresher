@@ -161,7 +161,7 @@ const TableUsers = () => {
     <>
       <Container>
         <div className="my-3 d-flex flex-column md-flex-row md-align-items-center justify-content-between">
-          <h3>List users:</h3>
+          <h3>List Users:</h3>
           <div className="d-flex gap-2 align-items-center">
             <Button
               className="d-flex align-items-center gap-1"

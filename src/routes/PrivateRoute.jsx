@@ -1,10 +1,10 @@
-import { useContext } from 'react'
 import { Alert, Container } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 import Header from '../components/Header'
-import { UserContext } from '../context/UserContext'
 
 const PrivateRoute = ({ children }) => {
-  const { user } = useContext(UserContext)
+  const user = useSelector((state) => state.user.value)
+
   if (!user?.auth) {
     return (
       <>
