@@ -92,12 +92,12 @@ const TableUsers = () => {
 
   const [dataExport, setDataExport] = useState([])
   const getUsersExport = (event, done) => {
-    let data = []
+    const data = []
 
     if (users?.length > 0) {
-      data.push(['ID', 'First name', 'Last name', 'Email'])
+      data.push(['id', 'first_name', 'last_name', 'email'])
       users.map((user) => {
-        let row = []
+        const row = []
         row[0] = user.id
         row[1] = user.first_name
         row[2] = user.last_name
@@ -130,20 +130,21 @@ const TableUsers = () => {
           if (data?.length <= 0) return toast.error('Not found data in file')
 
           if (
-            data[0]?.length !== 3 ||
-            data[0][0] !== 'first_name' ||
-            data[0][1] !== 'last_name' ||
-            data[0][2] !== 'email'
+            data[0]?.length !== 4 ||
+            data[0][1] !== 'first_name' ||
+            data[0][2] !== 'last_name' ||
+            data[0][3] !== 'email'
           )
             return toast.error('Wrong file format')
 
           const result = []
           data.forEach((value, index) => {
-            if (index > 0 && value.length === 3) {
+            if (index > 0 && value.length === 4) {
               const obj = {
-                first_name: value[0],
-                last_name: value[1],
-                email: value[2],
+                id: Math.floor(Math.random() * 1000),
+                first_name: value[1],
+                last_name: value[2],
+                email: value[3],
               }
 
               result.push(obj)
